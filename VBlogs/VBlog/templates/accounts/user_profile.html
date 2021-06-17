@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+ <h1>User Profile</h1>
+ <div class="card col-12  bg-light">
+    <div class="row no-gutters">
+      <div class="col-md-2 mt-auto mb-auto">
+        <img class="rounded-circle" src="{{page_user.Profile_pic.url}}" width=130 height=130 alt="{{post.author}}">
+      </div>
+      <div class="col-md-10">
+        <div class="card-body bg-light">
+            <h5 class="card-title">{{page_user.user.first_name}} {{page_user.user.last_name}}</h5>
+            <p class="card-text">
+                <blockquote class="blockquote">
+                    <!--mb-0 means margin bottom is set to 0px so as to display correctly in card-->
+                    <p class="mb-0">{{page_user.bio}} </p>
+                </blockquote>        
+            </p>
+        </div>
+        <div class="card-footer">
+            <p class="small">
+                {% if page_user.personal_website_url %}
+                    <a target="_blank" href="{{page_user.personal_website_url}}" style="text-decoration: none;">
+                        <i style="font-size: 32px;" class="fa fa-info-circle fa-lg mr-3" aria-hidden="true"></i>
+                    </a>
+                {% endif %}
+                {% if page_user.twitter_url %}
+                    <a target="_blank" href="{{page_user.twitter_url}}" style="text-decoration: none;">
+                        <i style="font-size: 32px;" class="fa fa-twitter mr-3" aria-hidden="true"></i>
+                    </a>
+                {% endif %}
+                {% if page_user.instagram_url %}
+                    <a target="_blank" href="{{page_user.instagram_url}}" style="text-decoration: none;">
+                        <i style="font-size: 32px;" class="fa fa-instagram mr-3" aria-hidden="true"></i>
+                    </a>
+                {% endif %}
+                {% if page_user.facebook_url %}
+                    <a target="_blank" href="{{page_user.facebook_url}}" style="text-decoration: none;">
+                        <i style="font-size: 32px;" class="fa fa-facebook-official mr-3" aria-hidden="true"></i>
+                    </a>
+                {% endif %}
+                {% if page_user.linkedin_url %}
+                    <a target="_blank" href="{{page_user.linkedin_url}}" style="text-decoration: none;">
+                        <i style="font-size: 32px;" class="fa fa-linkedin-square mr-3" aria-hidden="true"></i>
+                    </a>
+                {% endif %}
+            </p>
+        </div>
+      </div>
+    </div>
+</div>
+<br/><br/>
+<hr>
+<br/>
+{% if count > 0 %}
+<h3>Categories Contribution : </h3>
+{% for category in categories %}
+<div class="accordion" id="accordionExample">
+    <div class="card">
+      <div class="card-header" id="headingOne">
+        <h2 class="mb-0">
+          <button style="text-decoration: none;" class="btn btn-link btn-block text-left text-dark" type="button" data-toggle="collapse" data-target="#{{forloop.counter}}" aria-controls="{{ forloop.counter }}">
+              {{ category.title }}
+          </button>
+        </h2>
+      </div>
+  
+      <div id="{{ forloop.counter }}" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+        <div class="card-body">
+            Created On : {{ category.creation_date }} </br>
+            Number of Posts under {{ category.title}} category : <b>{{ categories_count.pop }} posts</b>
+        </div>
+      </div>
+    </div>
+</div>
+{% endfor %}
+{% endif %}
+<br/><br/>
+<hr>
+<table class="table table-bordered  table-hover table-responsive-sm">
+    <thead class="bg-dark text-white">
+      <tr>
+        <th scope="col">Sr. No.</th>
+        <th scope="col">Post</th>
+        <th scop="col">Categories</th>
+        {% if user.is_authenticated %}
+            {% with posts|first as first_doc %}
+                {% if request.user.id == first_doc.author_id %}
+                    <th scope="col">Actions</th>
+                {% endif %}
+            {% endwith %}
+        {% endif %}
+        <th scope="col">Overview</th>
+      </tr>
+    </thead>
+    <tbody>
+        {% for post in posts %}
+        <tr>
+            <th scope="row">{{ forloop.counter }}</th>
+            <td>{{ post.title }}</td>
+            <td>{{ post.Categories }}</td>
+            {% if user.is_authenticated %}
+                {% if request.user.id == post.author_id %}
+                    <td>
+                        <a href="{%url 'update_post' post.pk %}" class="btn btn-success mr-3">Update</a>
+                        <a href="{%url 'blog_delete' post.pk %}" class="btn btn-danger">Delete</a>
+                    </td>
+                {% endif %}
+            {% endif %}
+            <td>
+                <a href="{%url 'overview' post.pk %}" class="btn btn-secondary mr-3"><i class="fa fa-eye"></i> Overview</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<div hidden>
+    <li id="li">{{ month_list }}</li>
+</div>
+<canvas id="myChart"></canvas>
+<script>
+    document.addEventListener('DOMContentLoaded',function(){
+        var ctx = document.getElementById("myChart").getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ["Jan","Feb","Mar","April","May","June","July","Aug","Sept","Oct","Nov","Dec"],
+                datasets: [{
+                    label: '# of Posts',
+                    data :{{ month_list }},
+                    backgroundColor: [
+                        'rgba(255, 99, 132)',
+                        'rgba(54, 162, 235)',
+                        'rgba(255, 206, 86)',
+                        'rgba(75, 192, 192)',
+                        'rgba(153, 102, 255)',
+                        'rgba(255, 159, 64)'
+                    ],
+                    borderColor: [
+                        'rgba(255,99,132,1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero:true
+                        }
+                    }]
+                }
+            }
+        });
+    });
+</script>
+<br/><br/>
+{% endblock %}

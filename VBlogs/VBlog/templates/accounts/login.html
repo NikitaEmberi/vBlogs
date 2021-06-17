@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+{% block content%}
+
+<section id="login" class="bg-light py-5">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6 mx-auto">
+        <div class="card">
+          <div class="card-header bg-primary text-white">
+            <h4>
+              <i class="fas fa-sign-in-alt"></i> Login</h4>
+          </div>
+          <div class="card-body">
+          {% include '_alerts.html' %}
+           
+<form action="{%  url 'login'%}" method="POST">
+  {% csrf_token %}
+  {% for fm in form %}
+    <div class="form-group">
+      {{fm.label_tag}} {{fm}} <small class="text-warning">{{fm.errors|striptags}}</small>
+    </div>
+  {% endfor %}
+  <input type="submit" value="Login" class="btn btn-secondary btn-block">
+  {% if form.non_field_errors %}
+    {% for error in form.non_field_errors %}
+      <p class="alert alert-danger my-3">{{error}}</p>
+    {% endfor %}
+  {% endif %}
+
+                <div class="container" style="background-color: #e4ece3">
+
+                  <span class="psw"> <a href="{%url 'password_reset'%}" >Forgot password?</a></span>
+
+                </div>
+              <br>
+              <div class="container" style="background-color: #f1f1f1">
+                <span class="psw"><i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dont have an account? <a href="{%url 'register'%}">Sign in</i></a></span>
+              </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+
+ 
+
+  <!-- <section id="login" class="bg-light py-5">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6 mx-auto">
+          <div class="card">
+            <div class="card-header bg-primary text-white">
+              <h4>
+                <i class="fas fa-sign-in-alt"></i> Login</h4>
+            </div>
+            <div class="card-body">
+            Alerts-
+              {% include '_alerts.html' %}
+                <form action="{% url 'login' %}" method="POST" autocomplete="off">
+                    {% csrf_token %}
+                <div class="form-group">
+                  <label for="username">Username</label>
+                  <input type="search" name="username" class="form-control"  placeholder="username" required>
+                </div>
+                {% if form.non_field_errors %}
+                {% for error in form.non_field_errors %}
+                  <p class="alert alert-danger my-3">{{error}}</p>
+                {% endfor %}
+              {% endif %}
+                <div class="form-group">
+                  <label for="password2">Password</label>
+                  <input type="password" name="password" class="form-control" placeholder="password" required>
+                </div>
+
+                <input type="submit" value="Login" class="btn btn-secondary btn-block">
+                <div class="container" style="background-color: #e4ece3">
+
+                  <span class="psw"> <a href="{%url 'password_reset'%}" >Forgot password?</a></span>
+
+                </div>
+              <br>
+              <div class="container" style="background-color: #f1f1f1">
+                <span class="psw"><i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dont have an account? <a href="{%url 'register'%}">Sign in</i></a></span>
+              </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  -->
+
+  <script src="assets/js/jquery-3.3.1.min.js "></script>
+  <script src="assets/js/bootstrap.bundle.min.js "></script>
+  <script src="assets/js/main.js "></script>
+
+
+
+{% endblock %}

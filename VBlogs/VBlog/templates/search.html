@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Search results...</h1>
+<div class="container">
+    <div class="row">
+      
+    {% if allPosts|length < 1 %}
+        <h3><i><strong><font color="red">No Search results found!</font>  </strong></i>
+        
+        <br><br><p>Your search query: <strong><font color="red">{{query}}</font></strong> did not match any blogs<br>
+        Suggestions:
+        <ul>
+        <li>Make sure all words are spelled correctly</li>
+        <li>Try a different keyword</li>
+        <li>Try more general keywords</li>
+        <li>Try fewer keywords</li> 
+
+        </ul> <br><br><br></p>
+      </h3>
+    {% endif %}
+    {% for post in allPosts %}
+    <div class="col-sm-12 col-md-6 mt-3 mb-5">
+        <div class="card">
+            <img class="card-img-top" height='250' src="{{ post.Poster.url }}" alt={{post.title}}>
+            <div class="card-body">
+              <h3 class="card-title">{{post.title}}</h3>
+              <h5>- {{post.author.first_name}} {{post.author.last_name}} </h5>
+              <!-- <p class="card-text">{{post.body | slice:":200"|safe}}...</p> -->
+              <p class="card-text"> {{post.snippet}} </p>
+              <a href="{% url 'blog-detail' post.pk %}" class="btn btn-primary">Continue Reading 👉</a>
+            </div>        
+        </div>
+    </div>
+    
+    {% endfor %}
+    </div>
+
+</div>
+
+{% endblock %}

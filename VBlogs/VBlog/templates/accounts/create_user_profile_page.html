@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Create Profile Page</h1>
+{{ form.non_form_errors }} 
+{% if user.is_authenticated %}
+<form method="POST" enctype="multipart/form-data">
+        <br></br>
+        {% csrf_token %}
+        {% if form.errors %}
+            <div class="alert alert-danger alert-dismissible col-12 mx-1" role="alert">
+                <div id="form_errors">
+                {% for key, value in form.errors.items %}
+                    <span class="fieldWrapper">
+                        {{ key }}:{{ value }}
+                    </span>
+                {% endfor %}
+                </div>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endif %}
+        {{ form.as_p }} 
+        <button class="btn btn-secondary">Create Profile</button>
+</form>
+
+{% else %}
+    <h1>You are not Allowed to create Profile!!!!</h1>
+{% endif %}
+<br/>
+
+
+{% endblock %}
+

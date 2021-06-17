@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'styles/styles.css' %}">
+{% endblock %}
+
+{% block content %} 
+{% include '_alerts.html' %} 
+  <header class="jumbotron text-dark" id="notification-jumbotron" style="margin-top: 25px;">
+    <div class="container" style="border: 1px solid white;">
+        <div class="row row-header">
+            <div class="col-12 align-self-center">
+                <h1 style="text-align: center;">🏆Congratulations!!!🏆</h1>
+                <div class="row align-self-center justify-content-center mt-5">
+                    <div class="col-12" style="display: inline-block;">
+                    <ul class="list-unstyled">
+                        {% for trending_post in trending_posts %}
+                            {% if trending_post.author.id == request.user.id %}
+                                {% load hitcount_tags %}
+                                <li class="trending_posts_per_user">
+                                    <h3 style="text-align: center;">
+                                        Your post "{{trending_post.title}}" has hit {% get_hit_count for trending_post %}  views and has been trending this week !!!
+                                    </h3>    
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                   </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="text-align: center;">
+        <h4>We encourage you to make more such interesting posts. Keep Going!😄</h4>
+    </div>
+</header>
+{{ should_send_email }}
+{% for i in trending_posts_email %}
+{{ i.user.email }}
+{% endfor %}
+<!-- {% for i in trending_posts_notifications %}
+{{ i.user_id.username }}
+{% endfor %} -->
+<header class="jumbotron welcome">
+    <div class="container">
+        <div class="row row-header">
+            <div class="col-12 col-sm-6"> 
+                <h1>Welcome To vBlogs!</h1>
+                <h4>Be inspired, Be informed!</h4>
+            </div>
+            <div class="col-12 col-sm col-md-3 align-self-center">
+                <h4>Become an Author!</h4>
+                {% if user.is_authenticated  %}
+                <a class="btn btn-warning btn-block nav-link" href="{% url 'add_post' %}"><span class="fa fa-hand-o-right fa-lg"></span> Add Post </a>
+                {% else %}
+                <a id="myBtn1" href="{% url 'register'%}" class="btn btn-warning btn-block nav-link">
+                Sign Up</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</header>
+
+<div class="badges">
+    <div class="container">
+        <h3>Categories</h3>
+        <form method="get" action='/searchCategory' class="float-right form-inline my-2 my-lg-0">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search any category.." name="query" id="query">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit"><i class="fa fa-search"></i></button>
+        </form>
+
+        <div class="row row-content align-items-center badges">
+            {% for category in Categories %}
+            <a class="category-links" href="{% url 'category' category.title|slugify %}" style="text-decoration: none; color:rgba(0, 0, 0, 0.733)"><span class="badge badge-pill" style="border: 1px solid darkgray;">{{category.title}}</span></a>
+            {% endfor %}
+        </div>    
+    </div>
+</div>
+
+<hr/>
+
+<div class="container">
+    <div class="row row-content">
+        <div class="col">
+            <div id="mycarousel" class="carousel slide" data-ride="carousel">
+                <div class="carousel-inner" role="listbox">
+                    {% for trending_post in trending_posts %}
+                        {% with trending_posts|first as first_doc %}
+                            {% if trending_post.title == first_doc.title %}
+                                <div class="carousel-item active">
+                            {% else %}
+                                <div class="carousel-item">
+                            {% endif %}
+                        {% endwith %}
+                            <img class="d-block img-fluid" style="object-fit: cover"
+                            src="{{ trending_post.Poster.url }}" height="100" alt="post1">
+                            <div class="carousel-caption d-none d-block">
+                                <h2 style="color:black">Trending !!!</h2>
+                                <h4 style="color:black">{{ trending_post.title }}</h4>
+                                <p style="color:black">{{ trending_post.snippet }}</p>
+                                <a href="{% url 'blog-detail' trending_post.pk %}" class="btn btn-primary">Continue Reading 👉</a>
+                            </div> 
+                        </div>
+                    {% endfor %}
+                    <ol class="carousel-indicators">
+                        <li data-target="#mycarousel" data-slide-to="0" 
+                        class="active"></li>
+                        <li data-target="#mycarousel" data-slide-to="1"></li>
+                        <li data-target="#mycarousel" data-slide-to="2"></li>
+                    </ol>
+                    <a class="carousel-control-prev" href="#mycarousel" role="button"
+                    data-slide="prev">
+                        <span class="carousel-control-prev-icon"></span>
+                    </a>
+                    <a class="carousel-control-next" href="#mycarousel" role="button"
+                    data-slide="next">
+                        <span class="carousel-control-next-icon"></span>
+                    </a>
+                    <button class="btn btn-danger btn-sm" id="carouselButton">
+                        <span class="fa fa-pause"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<br/>
+<hr/>
+<br/>
+
+<h1>Recent Posts</h1>
+<div class="container">
+    <div class="row">
+    {% for post in Post %}
+    <div class="col-sm-12 col-md-6 mt-3 mb-5">
+        <div class="card">
+            <img class="card-img-top" height='250' src="{{ post.Poster.url }}" alt={{post.title}}>
+            <div class="card-body">
+              <h3 class="card-title">{{post.title}}</h3>
+              <h5>- {{post.author.first_name}} {{post.author.last_name}} </h5>
+              <!-- <p class="card-text">{{post.body | slice:":200"|safe}}...</p> -->
+              <p class="card-text"> {{post.snippet}} </p>
+              <a href="{% url 'blog-detail' post.pk %}" class="btn btn-primary">Continue Reading 👉</a>
+            </div>        
+        </div>
+    </div>
+    
+    {% endfor %}
+    </div>
+
+</div>
+{% endblock %}

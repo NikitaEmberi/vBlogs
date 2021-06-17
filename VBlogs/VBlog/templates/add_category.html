@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Add Category</h1>
+
+{% if user.is_authenticated %}
+<form method="POST">
+        <br></br>
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button class="btn btn-secondary">Add Category</button>
+    </form>    
+{% else %}
+    <h1>You are not Allowed to Add Categories!!!!</h1>
+{% endif %}
+
+<br/><br/>
+{% endblock %}

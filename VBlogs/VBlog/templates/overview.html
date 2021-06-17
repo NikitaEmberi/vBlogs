@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+{% load hitcount_tags %}
+{% if post %}
+<h1><u>{{post.title}} OverView</u></h1>
+{% if list_count > 0 %}
+<header class="jumbotron" id="notification-jumbotron" style="margin-top: 25px;">
+    <div class="container" style="border: 1px solid white;">
+        <div class="row row-header">
+            <div class="col-12 align-self-center">
+                <h1 style="text-align: center;">🏆Congratulations!!!🏆</h1>
+                <div class="row align-self-center justify-content-center mt-5">
+                    <div class="col-12" style="display: inline-block;">
+                    <ul class="list-unstyled">
+                            {% load hitcount_tags %}
+                            <li class="trending_posts_per_user">
+                                <h3 style="text-align: center;">
+                                    Your post "{{post.title}}" has been trending this week !!!
+                                </h3>    
+                            </li>
+                    </ul>
+                   </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="text-align: center;">
+        <h4>We encourage you to make more such interesting posts. Keep Going!😄</h4>
+    </div>
+</header>
+{% endif %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <img src="{{ post.Poster.url }}" width=300 height=300/>
+        </div>
+        <div class="col-md-8">
+            <h4>Created On: {{post.published_date}} </h4>
+            <h4 id="categories">Categories = {{post.Categories}}</h4>
+            <h4>Likes: {{ likes }} Likes</h4>
+            <h4 id="views">Views: {% get_hit_count for post %} Views</h4>
+        </div>
+    </div>
+    <br/>
+    <hr>
+    <div class="row">
+        <div class="col-12">
+            {% if post.author_id == request.user.id %}
+            {% if post.thoughts.all %}
+            <h3>You have Downvote messages for this post 🙁</h3>
+                {% for thought in post.thoughts.all %}
+                <div class="accordion" id="accordionExample">
+                    <div class="card">
+                      <div class="card-header" id="headingOne">
+                        <h2 class="mb-0">
+                          <button style="text-decoration: none;" class="btn btn-link btn-block text-left text-dark" type="button" data-toggle="collapse" data-target="#{{forloop.counter}}" aria-controls="{{ forloop.counter }}">
+                              {{ thought.thoughts }}
+                          </button>
+                        </h2>
+                      </div>
+                  
+                      <div id="{{ forloop.counter }}" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+                        <div class="card-body">
+                            <b>Written By :  {{thought.user.first_name}} {{thought.user.last_name}}</b></br>
+                            <p>If you want to resolve conversation Mail here: </p><a class="btn btn-success" href="mailto:{{ thought.user.email }}"> <i class="fa fa-envelope "></i></a>
+                        </div>
+                      </div>
+                    </div>
+                </div>                
+                {% endfor %}
+            {% endif %}
+        {% endif %}
+        </div>
+    </div>
+</div>
+<br/><br/>
+<hr>
+{% if post.likes.all %}
+    <h3>Want to see who all liked this post? </h3>
+    <ul class="list-group">
+    {% for like in post.likes.all %}
+    <div class="col-12">
+        <li class="list-group-item">{{ like.first_name }} {{ like.last_name }}</li>
+    </div>
+    {% endfor %}
+   </ul>
+{% endif %}
+{% else %}
+<h1>404! Page Not Found</h1>
+{% endif %}
+<br/><br/>
+{% endblock %}
+

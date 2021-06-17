@@ -1,0 +1,28 @@
+<header class="jumbotron" id="notification-jumbotron" style="margin-top: 25px;">
+    <div class="container" style="border: 1px solid white;">
+        <div class="row row-header">
+            <div class="col-12 align-self-center">
+                <h1 style="text-align: center;">🏆Congratulations!!!🏆</h1>
+                <div class="row align-self-center justify-content-center mt-5">
+                    <div class="col-12" style="display: inline-block;">
+                    <ul class="list-unstyled">
+                        {% for trending_post in trending_posts %}
+                            {% if trending_post.author.id == user_id %}
+                                {% load hitcount_tags %}
+                                <li class="trending_posts_per_user">
+                                    <h3 style="text-align: center;">
+                                        Your post "{{trending_post.title}}" has hit {% get_hit_count for trending_post %}  views and has been trending this week !!!
+                                    </h3>    
+                                </li>
+                            {% endif %}                         
+                        {% endfor %}
+                    </ul>
+                   </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="text-align: center;">
+        <h4>We encourage you to make more such interesting posts. Keep Going!😄</h4>
+    </div>
+</header>

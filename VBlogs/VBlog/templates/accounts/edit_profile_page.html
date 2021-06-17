@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Edit Profile</h1>
+{{ form.non_form_errors }} 
+{% if user.is_authenticated %}
+    {% if user.id == profile.user.id %}
+        <form method="POST" enctype="multipart/form-data">
+                <br></br>
+                {% csrf_token %}
+                {% if form.errors %}
+                    <div class="alert alert-danger alert-dismissible col-12 mx-1" role="alert">
+                        <div id="form_errors">
+                        {% for key, value in form.errors.items %}
+                            <span class="fieldWrapper">
+                                {{ key }}:{{ value }}
+                            </span>
+                        {% endfor %}
+                        </div>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                {% endif %}
+                {{ form.as_p }}
+                <button class="btn btn-secondary">Update Profile</button>
+        </form>
+    {% else %}
+        <h1> You are not the correct user to edit this page </h1>
+    {% endif %}
+
+<!-- To not allow a user to select other users as author -->
+
+{% else %}
+    <h1>You are not Allowed to create Post!!!!</h1>
+{% endif %}
+<br/>
+
+<br/><br/>
+<script>
+    document.addEventListener('DOMContentLoaded',function(){
+        var labels = document.getElementsByTagName('label');
+        for (item of labels) {
+           item.style.fontWeight='bold';
+        }
+    });
+</script>
+{% endblock %}
+
